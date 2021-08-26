@@ -3,11 +3,12 @@ import Map from './components/Map';
 import Stats from './components/Stats';
 import Overview from './components/Overview';
 import { useState, useEffect, createContext, useContext } from 'react';
+import { sortData } from './util'
 
 export const CountryContext = createContext('Worldwide');
 
 function App() {
-  const [selectedCountry, setSelectedCountry] = useContext('Worldwide')
+  const [selectedCountry, setSelectedCountry] = useState('Worldwide')
   const [countryInfo, setCountryInfo] = useState({});
   const [countries, setCountries] = useState([]);
   const [mapCountries, setMapCountries] = useState([]);
@@ -53,7 +54,7 @@ function App() {
     await fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        setInputCountry(countryCode);
+        setSelectedCountry(countryCode);
         setCountryInfo(data);
         setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
         setMapZoom(4);
@@ -64,13 +65,14 @@ function App() {
     <div className="App bg-gray-100">
       {/* useMemo for value below? */}
       <CountryContext.Provider value={{ selectedCountry, setSelectedCountry }}>
-        <div className="app-top flex flex-col sm:flex-row justify-between space-y-4 sm:space-y-0 sm:space-x-2 p-2">
+        <div className="app-top flex flex-col sm:flex-row justify-between space-y-4 sm:space-y-0 sm:space-x-2 m-2">
           <Stats 
-            props={onCountryChange}
+            onChange={onCountryChange}
+            countries={countries}
           />
           <Map />
-          <Overview /> 
         </div>
+        <Overview /> 
       </CountryContext.Provider>
     </div>
   );
