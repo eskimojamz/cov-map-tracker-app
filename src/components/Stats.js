@@ -1,19 +1,21 @@
 import { useContext } from "react";
 import { CountryContext } from '../App'
 import { CountryDropdown } from "./CountryDropdown";
+import CountryLineChart from "./CountryLineChart";
 
-const Stats = ({ onCountryChange, countries }) => {
-    const { selectedCountry } = useContext(CountryContext)
+const Stats = ({ countries, countryInfo, casesType }) => {
+
     return (
         <div className="stats w-full sm:h-full sm:w-1/2 bg-white rounded-md p-2">
             {/* <h1>Statistics</h1> */}
             <div>
-                <CountryDropdown 
-                    value={selectedCountry}
-                    onChange={onCountryChange}
+                <CountryDropdown
                     countries={countries}
                 />
-                <p>Chart - new cases & deaths</p>
+                <CountryLineChart 
+                    casesType={casesType}
+                />
+                {countryInfo}
             </div>
         </div>
     )
