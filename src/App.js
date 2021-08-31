@@ -1,30 +1,20 @@
 import './App.css';
+import Navbar from './components/Navbar';
 import Map from './components/Map';
 import Stats from './components/Stats';
 import Overview from './components/Overview';
-import { useState, useEffect, createContext, useContext } from 'react';
-import { sortData } from './util'
+import { useState, useEffect, createContext } from 'react';
 
 export const CountryContext = createContext();
+export const CasesTypeContext = createContext();
 
 function App() {
   const [selectedCountry, setSelectedCountry] = useState('Worldwide')
-  const [countryInfo, setCountryInfo] = useState();
+  const [countryData, setCountryData] = useState();
   const [countries, setCountries] = useState([]);
-  const [mapCountries, setMapCountries] = useState([]);
-  // const [tableData, setTableData] = useState([]);
   const [casesType, setCasesType] = useState("cases");
   const [mapCenter, setMapCenter] = useState({lat: 35, lng: 0});
   const [mapZoom, setMapZoom] = useState(1);
-
-  console.log(selectedCountry)
-  useEffect(() => {
-    fetch("https://disease.sh/v3/covid-19/all")
-      .then((response) => response.json())
-      .then((data) => {
-        setCountryInfo(data);
-      });
-  }, []);
 
   useEffect(() => {
     const getCountriesData = async () => {
@@ -34,10 +24,12 @@ function App() {
           const countries = data.map((country) => ({
             name: country.country,
             value: country.countryInfo.iso2,
+            lat: country.countryInfo.lat,
+            long: country.countryInfo.long,
+            cases: country.cases,
+            deaths: country.deaths
           }));
-          let sortedData = sortData(data);
           setCountries(countries);
-          // setMapCountries(data);
         });
     };
 
@@ -53,7 +45,7 @@ function App() {
       await fetch(url)
         .then((response) => response.json())
         .then((data) => {
-          setCountryInfo(data);
+          setCountryData(data);
           if (selectedCountry === "Worldwide") {
             setMapCenter({lat: 35, lng: 0})
             setMapZoom(1)
@@ -71,21 +63,26 @@ function App() {
 
   return (
     <div className="App bg-gray-100">
-      {/* useMemo for value below? */}
       <CountryContext.Provider value={{ selectedCountry, setSelectedCountry }}>
-        <div className="app-top flex flex-col sm:flex-row justify-between space-y-4 sm:space-y-0 sm:space-x-2 m-2">
+      <CasesTypeContext.Provider value={{ casesType, setCasesType }}>
+        <Navbar />
+        <div className="app-top flex flex-col sm:flex-row justify-between space-y-4 sm:space-y-0 sm:space-x-4 m-auto">
           <Stats
             countries={countries}
-            countryInfo={JSON.stringify(countryInfo)}
+            countryData={JSON.stringify(countryData)}
             casesType={casesType}
           />
           <Map 
             mapCenter={mapCenter}
             mapZoom={mapZoom}
-            countryInfo={countryInfo}
+            countryData={countryData}
+            countries={countries}
           />
         </div>
-        <Overview /> 
+        <Overview 
+          countryData={countryData}
+        /> 
+      </CasesTypeContext.Provider>
       </CountryContext.Provider>
     </div>
   );

@@ -1,11 +1,13 @@
 import { Line } from 'react-chartjs-2'
-import { CountryContext } from '../App';
+import { CasesTypeContext, CountryContext } from '../App';
 import { useState, useEffect, useContext } from 'react'
 import numeral from 'numeral'
 
 const options = {
-    legend: {
-        display: false,
+    plugins: {
+        legend: {
+            display: false,
+        },
     },
     elements: {
         point: {
@@ -25,30 +27,18 @@ const options = {
     scales: {
         xAxes: [
         {
-            type: "time",
-            time: {
-                unit: 'month',
-                unitStepSize: 1,
-                displayFormats: {
-                    'month': 'MMM YY'
-                },
-                parser: 'MM YY'
-            },
+            type: "linear",
             title: {
                 display: true,
                 text: 'Date'
-            }
+            },
         },
         ],
         yAxes: [
         {
-            gridLines: {
-            display: false,
-            },
             ticks: {
-            // Include a dollar sign in the ticks
-            callback: function (value, index, values) {
-                return numeral(value).format("0a");
+                callback: function (value, index, values) {
+                    return numeral(value).format("0a");
             },
             },
         },
@@ -74,27 +64,43 @@ const buildChartDataWorld = (data, casesType) => {
 };
 
 const buildChartDataCountry = (data, casesType) => {
-    let chartData = [];
-    let lastDataPoint;
-    for (let date in data.timeline[casesType]) {
-        if (lastDataPoint) {
-            let newDataPoint = {
-                x: date,
-                y: data.timeline[casesType][date] - lastDataPoint,
-            };
-            chartData.push(newDataPoint);
+    if (data.timeline) {
+        let chartData = [];
+        let lastDataPoint;
+        for (let date in data.timeline[casesType]) {
+            if (lastDataPoint) {
+                let newDataPoint = {
+                    x: date,
+                    y: data.timeline[casesType][date] - lastDataPoint,
+                };
+                chartData.push(newDataPoint);
+            }
+            lastDataPoint = data.timeline[casesType][date];
         }
-        lastDataPoint = data.timeline[casesType][date];
+        return chartData;
+    } else {
+        let chartData = "noData"
+        return chartData;
     }
-
-    return chartData;
 };
 
-const CountryLineChart = ({ casesType }) => {
+const CountryLineChart = () => {
     const [data, setData] = useState({});
     const { selectedCountry, setSelectedCountry } = useContext(CountryContext)
+    const { casesType, setCasesType } = useContext(CasesTypeContext)
+    const [chartColor, setChartColor] = useState('#2675F4')
 
-    console.log(casesType)
+    console.log(chartColor)
+
+    useEffect(() => {
+        if (casesType === 'cases') {
+            setChartColor('#2675F4')
+        } else if (casesType === 'deaths'){
+            setChartColor('#F4323C')
+        } else if(casesType === 'recovered'){
+            setChartColor('#00B376')
+        }
+    }, [casesType])
 
     useEffect(() => {
       const fetchData = async () => {
@@ -121,22 +127,27 @@ const CountryLineChart = ({ casesType }) => {
     }, [selectedCountry, casesType]);
 
     return (
-        <div className="chart h-64">
-        {data?.length > 0 && (
+        <div className="chart h-72 w-full flex justify-center items-center bg-white rounded-md p-2 pr-0 mt-4">
+        {data?.length > 6 && (
             <Line 
                 data={{
                     datasets: [
                         {
-                            backgroundColor: "rgba(204, 16, 52, 0.5)",
+                            backgroundColor: `${chartColor}`,
                             borderCapStyle: "round",
-                            borderColor: "#f54242",
+                            borderColor: `${chartColor}`,
                             borderWidth: 1,
                             data: data,
+                            fill: true,
+                            label: casesType
                         },
                     ],
                 }}
                 options={options}
             />
+        )}
+        {data === "noData" && (
+            <h1>Historical Data Not Available</h1>
         )}
         </div>
     )

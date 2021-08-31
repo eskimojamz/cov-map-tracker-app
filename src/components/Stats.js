@@ -3,20 +3,19 @@ import { CountryContext } from '../App'
 import { CountryDropdown } from "./CountryDropdown";
 import CountryLineChart from "./CountryLineChart";
 
-const Stats = ({ countries, countryInfo, casesType }) => {
+const Stats = ({ countries }) => {
 
     return (
-        <div className="stats w-full sm:h-full sm:w-1/2 bg-white rounded-md p-2">
+        <div className="stats w-full sm:h-full sm:w-1/2 bg-gray-100 rounded-md">
             {/* <h1>Statistics</h1> */}
-            <div>
                 <CountryDropdown
                     countries={countries}
                 />
-                <CountryLineChart 
-                    casesType={casesType}
+           
+                <CountryLineChart
                 />
-                {countryInfo}
-            </div>
+                
+            
         </div>
     )
 }

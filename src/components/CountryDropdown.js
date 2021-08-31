@@ -12,7 +12,7 @@ export const CountryDropdown = ({ countries }) => {
 
     return (
     <>
-    <label for="country-select" className="block text-sm font-medium text-gray-700">Country</label>
+    <label for="country-select" className="block text-sm font-medium text-gray-700 pb-2">Country</label>
     <select 
         id="country-select" 
         className="relative w-full bg-white border border-gray-300 rounded-md p-2"

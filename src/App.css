@@ -1,13 +1,14 @@
 .App {
-  height: 100vh;
+  height: 100%;
   width: 100%;
   max-width: 1260px;
   margin: auto;
+  padding: 1rem;
 }
 
 .app-top {
   height: auto;
-  width: 100vw;
+  width: 100%;
 }
 
 @media (min-width: 640px){
@@ -20,12 +21,12 @@
 .leaflet-container {
   height: 15rem;
   width: 100%;
+  border-radius: 6px;
 }
 
 @media (min-width: 640px){
   .leaflet-container {
     height: 100%;
     width: 50%;
-    border-radius: 6px;
   }
 }

@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-.stats {
-    height: 25rem;
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+@media (min-width: 640px){
+    .stats {
+        height: 25rem;
+        width: 50%;
+    }
 }
