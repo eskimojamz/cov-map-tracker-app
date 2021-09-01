@@ -127,7 +127,7 @@ const CountryLineChart = () => {
     }, [selectedCountry, casesType]);
 
     return (
-        <div className="chart h-72 w-full flex justify-center items-center bg-white rounded-md p-2 pr-0 mt-4">
+        <div className="chart h-72 w-full flex justify-center items-center bg-white border border-gray-300 rounded-md p-2 pr-0 mt-4">
         {data?.length > 6 && (
             <Line 
                 data={{

@@ -11,4 +11,7 @@ body {
         height: 25rem;
         width: 50%;
     }
+    .overview {
+        width: 30rem;
+    }
 }
